@@ -1,0 +1,9 @@
+{
+    "hostname": "change host 02",
+    "ip": "11.11.11.11",
+    "os": "windowssss",
+    "owner": 0,
+    "tags": [
+      "windows"
+    ]
+  }
