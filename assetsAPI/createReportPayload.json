@@ -1,0 +1,24 @@
+{
+  "custom_logo": 0,
+  "language": 1,
+  "report_data": {
+    "assets_details": true,
+    "basic_info": {
+      "config_profiles": true,
+      "executive_summary": true
+    },
+    "penetration_result": {
+      "risk_details": true
+    },
+    "vulnerability_level": {
+      "high": true,
+      "info": true,
+      "low": true,
+      "medium": true
+    }
+  },
+  "task_id": "d4ab074c-edeb-11ec-8f79-00505693f632",
+  "task_name": "",
+  "template": 1,
+  "type": "pdf"
+  }
