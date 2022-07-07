@@ -24,12 +24,16 @@ def encodeCredentials(auth):
   return 'Basic ' + base64_auth
 
 #create periodic tasks (weekly or monthly)
-#@param periodicType: "week" or "month"
-#@param targets: an array of targets
-#@param startTime: example: "12:06"
-#@param end_date: example: "2022-07-07 14:48"
-#@param pause_start: pause start time, example: "05:06"
-#@param pause_end: pause end time, example: "11:08"
+# targets: an array of targets
+# task_name: a name string
+# periodicType: "week" or "month"
+# startTime: example: "12:06"
+# end_date: example: "2022-07-07 14:48"
+# pause_start: pause start time, example: "05:06"
+# pause_end: pause end time, example: "11:08"
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
+# RidgeBotAPIHeader: {'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}
+# scenario_template: Integer
 def _handle_createPeriodicTask(targets, task_name, periodicType, startTime, end_date, pause_start, pause_end, RidgeBotAPIURL, RidgeBotAPIHeader, scenario_template=6):
   # Create a task using RidgeBot API
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks"
@@ -84,11 +88,13 @@ def _handle_createPeriodicTask(targets, task_name, periodicType, startTime, end_
   return task_id
 
 #create one-time tasks (run now or run once)
-#@param periodicType: "run now" or "run once"
-#@param targets: an array of targets
-#@param pending_time: pending time, example: "2022-07-25 08:47"
-#@param pause_start: pause start time, example: "05:06"
-#@param pause_end: pause end time, example: "11:08"
+# targets: an array of targets
+# task_name: a name string
+# periodicType: "week" or "month"
+# pending_time: example: "2022-07-25 08:47"
+# pause_start: pause start time, example: "05:06"
+# pause_end: pause end time, example: "11:08"
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
 def _handle_createOneTimeTask(targets, task_name, periodicType, pause_start, pause_end, pending_time, RidgeBotAPIURL, RidgeBotAPIHeader, scenario_template=6):
     # Create a task using RidgeBot API
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks"
@@ -132,6 +138,9 @@ def _handle_createOneTimeTask(targets, task_name, periodicType, pause_start, pau
   return task_id
 
 #use task_id to getTaskStatus
+# callHeader{'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}
+# task_id: the id of the task
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
 def _handle_getTaskStatus(callHeader, task_id, RidgeBotAPIURL):
   # Get the task completion status. Make sure task is finished before 
   # trying to generate a report
@@ -171,6 +180,9 @@ def _handle_getTaskStatus(callHeader, task_id, RidgeBotAPIURL):
   
 
 #use task_id to stop task
+# task_id: the id of the task
+#RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
+#RidgeBotAPIHeader{'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}			
 def _handle_taskStop(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/stop"
   with open("generalTaskPayload.json") as taskStopFile:
@@ -184,6 +196,9 @@ def _handle_taskStop(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   print("task id stopped: " + stopTaskResponse)
 
 #use task_id to pause task
+# task_id: the id of the task
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
+# RidgeBotAPIHeader{'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}			
 def _handle_taskPause(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/pause"
   with open("generalTaskPayload.json") as taskPauseFile:
@@ -197,6 +212,9 @@ def _handle_taskPause(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   print(pauseTaskResponse)
 
 #use task_id to get taskInfo task
+# task_id: the id of the task
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
+# RidgeBotAPIHeader{'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}	
 def _handle_taskInfo(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/info"
   with open("generalTaskPayload.json") as taskinfoFile:
@@ -211,6 +229,9 @@ def _handle_taskInfo(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   return response.json()["data"]
 
 #use task_id to get taskStatistics task
+# task_id: the id of the task
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
+# RidgeBotAPIHeader{'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}	
 def _handle_taskStatistics(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/statistics?task_id="+taskId
   response = requests.get(RidgeBotRequestURL, headers=RidgeBotAPIHeader, verify=False)
@@ -223,6 +244,9 @@ def _handle_taskStatistics(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   return taskStatistics_content
 
 #use task_id to delete task
+# targets: an array of target task ids
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
+# RidgeBotAPIHeader{'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}			
 def _handle_taskDelete(targets, RidgeBotAPIURL, RidgeBotAPIHeader):
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/delete"
   with open("deleteTaskPayload.json") as taskdeleteFile:
@@ -238,6 +262,9 @@ def _handle_taskDelete(targets, RidgeBotAPIURL, RidgeBotAPIHeader):
   print(deleteTaskResponse)
 
 #use task_id to clone task
+# task_id: the id of the task
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
+# RidgeBotAPIHeader{'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}		
 def _handle_taskClone(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/clone"
   with open("generalTaskPayload.json") as taskcloneFile:
@@ -251,6 +278,9 @@ def _handle_taskClone(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   print(cloneTaskResponse)
 
 #use task_id to start task
+# task_id: the id of the task
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
+# RidgeBotAPIHeader{'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}		
 def _handle_taskStart(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/start"
   with open("generalTaskPayload.json") as taskStartFile:
@@ -264,6 +294,9 @@ def _handle_taskStart(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   print(startTastResponse)  
 
 #use task_id to restart task
+# task_id: the id of the task
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
+# RidgeBotAPIHeader{'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}		
 def _handle_taskRestart(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/restart"
   with open("generalTaskPayload.json") as taskRestartFile:
@@ -277,12 +310,6 @@ def _handle_taskRestart(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
   print(restartTastResponse)
   
 #save tasks (run now, run once, weekly or monthly) (incomplete)
-#@param periodicType: "run now", "run once", "week" or "month"
-#@param targets: an array of targets
-#@param time: start time, example: "12:06"
-#@param end_date: end date, example: "2022-07-07 14:48"
-#@param pause_start: pause start time, example: "05:06"
-#@param pause_end: pause end time, example: "11:08" 
 def _handle_saveTask(targets, task_name, periodicType, time, end_date, pause_start, pause_end, pending_time, RidgeBotAPIURL, RidgeBotAPIHeader, scenario_template=6):
     # Create a task using RidgeBot API
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/draft/save"
@@ -364,9 +391,12 @@ def convertNameToDate(str) :
   return name_array[0], datetime.strptime(date_time_str[2:], '%y/%m/%d %H:%M:%S')
 
 
-# Use task_id and report type to generate a report
-# runIteration means whether this is the first time running the task or second time
-# Return: a dictionary containing the reportName and report_id
+# # Use task_id and report type to generate a report
+# task_id: the id of the task
+# RidgeBotAuthToken: {'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}
+# reportType: "pdf" or "csv"
+# runIteration: whether this is the first time running the task or second time
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
 def _handle_generateReport(task_id, RidgeBotAuthToken, reportType, runIteration, RidgeBotAPIURL):
   # Generate and download a CSV report from the task just created
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks?task_id=" + task_id
@@ -444,6 +474,12 @@ def _handle_generateReport(task_id, RidgeBotAuthToken, reportType, runIteration,
 # Download the report 
 # report_id: the number ID of the generated report
 # report type: either CSV or PDF
+# report_name: the name you want give to the report 
+# report_id: the id of the report
+# reportType: "pdf" or "csv"
+# folderName: the foldername you want put the report in
+# RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
+# RidgeBotAPIHeader: {'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}
 def _handle_downloadReport(report_name, report_id, reportType, folderName, RidgeBotAPIURL, RidgeBotAPIHeader):
   RidgeBotRequestURL = RidgeBotAPIURL + "/report/download"
   downloadReportCall = requests.post(RidgeBotRequestURL, \
@@ -464,144 +500,6 @@ def _handle_downloadReport(report_name, report_id, reportType, folderName, Ridge
 
   print("Report downloaded in the following directory:", folderName + "/" + reportFileName) 
 
-
-
-
-# # Get Risk Statistics data info CSV file
-# def _handle_generateRstatistics(task_id, filepath, RidgeBotAPIURL, RidgeBotAPIHeader):
-#   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/sensitive_statistics"
-  
-#   with open("createRStatistics.json") as createRStatisticsJSONfile:
-#     createRStatisticsPayload = json.load(createRStatisticsJSONfile)
-#     createRStatisticsPayload['task_id'] = task_id
-  
-#   createRStatisticsJSONfile.close()
-  
-#   generateRSatisticsResponse = requests.post(RidgeBotRequestURL, headers=RidgeBotAPIHeader, verify=False, json = createRStatisticsPayload)
-#   statistics_target=generateRSatisticsResponse.json()
-
-#   date_time = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
-#   dt_summary = {'Type':[], date_time:[]}
-#   dt_detail = {'Target': [],'Type':[], date_time:[]}
-#   for each in statistics_target['data']['targets']:
-#     dt_summary['Type'].append(each['value'])
-#     dt_summary[date_time].append(each['count'])
-#     with open("createRStatistics.json") as createRStatisticsJSONfile:
-#       createRStatisticsPayload = json.load(createRStatisticsJSONfile)
-#       createRStatisticsPayload['task_id'] = task_id
-#       createRStatisticsPayload['filter_fields'][0]['value'] = [each['value']]
-      
-#       createRStatisticsJSONfile.close()
-  
-#       generateRSatisticsResponse_target = requests.post(RidgeBotRequestURL, headers=RidgeBotAPIHeader, verify=False,json = createRStatisticsPayload)
-     
-#       statistics_R_target=generateRSatisticsResponse_target.json()
-      
-#       for detail in statistics_R_target['data']['sen_type']:
-#         if (detail['value'] == 0):
-#             detail['value'] = 'Command Execution'
-#         elif (detail['value'] == 1):
-#             detail['value'] = 'Credential Exposure'
-#         elif (detail['value'] == 2):
-#             detail['value'] = 'DataBase Manipulation'
-#         elif (detail['value'] == 3):
-#             detail['value'] = 'Sensitive Data Exfiltration'
-#         else:
-#             detail['value'] = 'Other'
-#         dt_detail['Target'].append(each['value'])
-#         dt_detail['Type'].append(detail['value'])
-#         dt_detail[date_time].append(detail['count'])
-        
-#   df_detail= pd.DataFrame.from_dict(dt_detail)
-#   df_detail.to_csv(filepath+"/"+ 'risk_count.csv', index=False)
-  
-#   df_summary = pd.DataFrame.from_dict(dt_summary)
-#   df_summary.to_csv(filepath + "/" + 'risksummary.csv', index=False)
-  
-# # Get Vul statistics data into CSV file
-# def _handle_generateVstatistics(task_id, filepath, RidgeBotAPIURL, RidgeBotAPIHeader):
-#   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/vulnerabilities_statistics"
-    
-#   with open("createVStatistics.json") as createVStatisticsJSONfile:
-#     createVStatisticsPayload = json.load(createVStatisticsJSONfile)
-#     createVStatisticsPayload['task_id'] = task_id
-  
-#   createVStatisticsJSONfile.close()
-  
-#   generateVSatisticsResponse = requests.post(RidgeBotRequestURL, headers=RidgeBotAPIHeader, verify=False, json = createVStatisticsPayload)
-#   statistics_target=generateVSatisticsResponse.json()
-#   targetindex = 0
-#   date_time = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
-#   dt_summary = {'Type':[], date_time:[]}
-#   dt_type= {'Target':[], 'Type':[], 'Severity':[],date_time:[]}
-#   dt_detail = {'Target':[],'Type':[], date_time:[]}
-  
-#   for each in statistics_target['data']['targets']:
-#     dt_summary['Type'].append(each['value'])
-#     dt_summary[date_time].append(each['count'])
-#     with open("createVStatistics.json") as createVStatisticsJSONfile:
-#       createVStatisticsPayload = json.load(createVStatisticsJSONfile)
-#       createVStatisticsPayload['task_id'] = task_id
-#       targetstr = each['value']
-#       createVStatisticsPayload['filter_fields'][0]['value'] = [targetstr]
-      
-#       createVStatisticsJSONfile.close()
-  
-#       generateVSatisticsResponse_target = requests.post(RidgeBotRequestURL, headers=RidgeBotAPIHeader, verify=False,json = createVStatisticsPayload)
-     
-#       statistics_1_target=generateVSatisticsResponse_target.json()
-      
-#       for detail in statistics_1_target['data']['severity']:
-#         if (detail['value']== 'MIDDLE'):
-#           detail['value'] = 'MEDIUM'
-#         dt_detail['Type'].append(detail['value'])
-#         dt_detail[date_time].append(detail['count'])
-#         dt_detail['Target'].append(targetstr)
-      
-#       TableSeverity = 'High'
-#       with open("createVStatistics_high.json") as createVHStatisticsJSONfile:
-#         createVHStatisticsPayload = json.load(createVHStatisticsJSONfile)
-#         createVHStatisticsPayload['task_id'] = task_id
-#         createVHStatisticsPayload['filter_fields'][0]['value'] = [targetstr]
-      
-#       createVHStatisticsJSONfile.close()
-
-#       generateVHSatisticsResponse_target = requests.post(RidgeBotRequestURL, headers=RidgeBotAPIHeader, verify=False,json = createVHStatisticsPayload)
-#       statistics_h_target=generateVHSatisticsResponse_target.json()
- 
-#       for type_detail in statistics_h_target['data']['vul_name']:
-#         dt_type['Type'].append(type_detail['value'])
-#         dt_type['Severity'].append(TableSeverity)
-#         dt_type[date_time].append(type_detail['count'])
-#         dt_type['Target'].append(targetstr)
-        
-#       TableSeverity = 'Medium'
-#       with open("createVStatistics_medium.json") as createVMStatisticsJSONfile:
-#         createVMStatisticsPayload = json.load(createVMStatisticsJSONfile)
-#         createVMStatisticsPayload['task_id'] = task_id
-#         createVMStatisticsPayload['filter_fields'][0]['value'] = [targetstr]
-      
-#       createVMStatisticsJSONfile.close()
-      
-#       generateVMSatisticsResponse_target = requests.post(RidgeBotRequestURL, headers=RidgeBotAPIHeader, verify=False,json = createVMStatisticsPayload)
-     
-#       statistics_m_target=generateVMSatisticsResponse_target.json()
-#       for type_detail in statistics_m_target['data']['vul_name']:
-#         dt_type['Type'].append(type_detail['value'])
-#         dt_type['Severity'].append(TableSeverity)
-#         dt_type[date_time].append(type_detail['count'])
-#         dt_type['Target'].append(targetstr)
-    
-#   df_detail= pd.DataFrame.from_dict(dt_detail)
-#   df_detail.to_csv(filepath+"/"+'vul_count_based_severity.csv', index=False)
-  
-#   df_type= pd.DataFrame.from_dict(dt_type)
-#   df_type= df_type.sort_values('Severity',ascending=True)
-#   df_type.to_csv(filepath+"/"+'vul_count_based_type.csv', index=False)
-  
-#   df_summary = pd.DataFrame.from_dict(dt_summary)
-#   df_summary.to_csv(filepath + "/" + 'vulnsummary.csv', index=False)
-#   #print('target Summary in directory: ', filepath)
     
 def _handle_mergeTwoCSV(CSV_name, reportFolderName, firstReportFolder, secondReportFolder, create_time):
   use_file = ''
