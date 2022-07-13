@@ -17,8 +17,6 @@ from taskAndReportManagement import *
 from taskAndReportManagement import _handle_getTaskStatus
 from taskAndReportManagement import _handle_generateReport
 from taskAndReportManagement import _handle_downloadReport
-from taskAndReportManagement import _handle_generateVstatistics
-from taskAndReportManagement import _handle_generateRstatistics
 from taskAndReportManagement import _handle_createOneTimeTask
 from taskAndReportManagement import _handle_createPeriodicTask
 from taskAndReportManagement import _handle_taskStop
