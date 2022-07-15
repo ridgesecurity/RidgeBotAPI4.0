@@ -233,7 +233,9 @@ def _handle_taskInfo(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
 # RidgeBotAPIURL: "https://bot58.ridgesecurity.ai/api/v4"
 # RidgeBotAPIHeader{'Authorization': YourRidgeBotAuthToken, 'Content-Type':'application/json'}	
 def _handle_taskStatistics(taskId, RidgeBotAPIURL, RidgeBotAPIHeader):
+  
   RidgeBotRequestURL = RidgeBotAPIURL + "/tasks/statistics?task_id="+taskId
+  print(RidgeBotRequestURL)
   response = requests.get(RidgeBotRequestURL, headers=RidgeBotAPIHeader, verify=False)
   if response.status_code != 200 or response.json()["code"] == 400:
     print("\nGet task statistics unsuccessful. Possible RidgeBot authentication user error.\n")

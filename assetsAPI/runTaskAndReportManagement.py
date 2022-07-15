@@ -61,7 +61,7 @@ def main():
         #global RidgeBot_API_URL
         RidgeBot_API_URL = baseURL + "api/v4"
 
-        #global default_RidgeBot_API_Header
+        global default_RidgeBot_API_Header
         default_RidgeBot_API_Header = {'Authorization': RidgeBotAuthToken, 'Content-Type':'application/json'}
 
         
@@ -81,12 +81,9 @@ def main():
         periodicType = "week"
         _handle_createPeriodicTask(targets, task_name, periodicType, startTime, end_date, pause_start, pause_end, RidgeBot_API_URL, default_RidgeBot_API_Header, scenario_template)
 
-        # #task_id for test:
-        # task_id = 'f62260f6-ef25-11ec-8f79-00505693f632'
-
         taskStatusHeader = {'Authorization': RidgeBotAuthToken, 'task_id': task_id}
-        create_time=datetime.now(tz=pytz.timezone('US/Pacific')).strftime("%Y-%m-%d-%H:%M:%S")
-        createat=datetime.now(tz=pytz.timezone('US/Pacific')).strftime("%m-%d-%Y-%H-%M-%S")
+        create_time=datetime.now(tz=pytz.timezone('US/Pacific')).strftime('%y/%m/%d %H:%M:%S')
+        createAt=datetime.now(tz=pytz.timezone('US/Pacific')).strftime("%m-%d-%Y-%H-%M-%S")
 
         # Check the task status before proceeding 
         _handle_getTaskStatus(taskStatusHeader, task_id, RidgeBot_API_URL)
@@ -94,8 +91,8 @@ def main():
         #use task_id to get taskInfo task
         _handle_taskInfo(task_id, RidgeBot_API_URL, default_RidgeBot_API_Header)
 
-        #use task_id to stop task
-        _handle_taskStatistics(taskStatusHeader, task_id, RidgeBot_API_URL)
+        #use task_id to get task statistics task
+        _handle_taskStatistics(task_id, RidgeBot_API_URL, taskStatusHeader)
 
         # #use task_id to stop task
         # _handle_taskStop(taskStatusHeader, task_id, RidgeBot_API_URL)
@@ -124,12 +121,14 @@ def main():
         else:
           os.makedirs(reportFolderName)
 
-        # Generate and download a CSV and PDF report
+
+        #task_id for test:
+        task_id = 'f62260f6-ef25-11ec-8f79-00505693f632'
+        # Generate and download PDF report
         # reportDict: a dictionary containing the reportName and report_id returned from function
-        reportDict = _handle_generateReport(task_id, RidgeBotAuthToken, "pdf", create_time, task_name, RidgeBot_API_URL)
-        _handle_downloadReport(task_name + createat, reportDict['report_id'], "pdf", reportFolderName, RidgeBot_API_URL, default_RidgeBot_API_Header)
-        # reportDict = generateReport(task_id, RidgeBotAuthToken, "csv", create_time, task_name, RidgeBot_API_URL)
-        # downloadReport(task_name + createat, reportDict['report_id'], "csv", reportFolderName, RidgeBot_API_URL, default_RidgeBot_API_Header)
+        reportDict = _handle_generateReport(task_id, RidgeBotAuthToken, "pdf", create_time, RidgeBot_API_URL)
+        _handle_downloadReport(task_name + createAt, reportDict['report_id'], "pdf", reportFolderName, RidgeBot_API_URL, default_RidgeBot_API_Header)
+        
         
         
 
